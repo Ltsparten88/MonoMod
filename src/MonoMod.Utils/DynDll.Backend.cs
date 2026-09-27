@@ -189,13 +189,13 @@ namespace MonoMod.Utils
                 IntPtr result;
                 if (name is null)
                 {
-                    handle = result = Interop.Windows.GetModuleHandleW(null);
+                    handle = result = (IntPtr)Interop.Windows.GetModuleHandleW(null);
                 }
                 else
                 {
                     fixed (char* pName = name.AsSpan())
                     {
-                        handle = result = Interop.Windows.LoadLibraryW((ushort*)pName);
+                        handle = result = (IntPtr)Interop.Windows.LoadLibraryW((ushort*)pName);
                     }
                 }
                 return result != IntPtr.Zero;
@@ -203,7 +203,7 @@ namespace MonoMod.Utils
 
             public override unsafe bool TryCloseLibrary(IntPtr handle)
             {
-                return Interop.Windows.FreeLibrary(new((void*)handle));
+                return Interop.Windows.FreeLibrary(new((void*)handle)) != 0;
             }
 
             public override unsafe bool TryGetExport(IntPtr handle, string name, out IntPtr ptr)

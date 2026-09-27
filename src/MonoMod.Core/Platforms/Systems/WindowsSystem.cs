@@ -112,7 +112,7 @@ namespace MonoMod.Core.Platforms.Systems
         private unsafe static void ProtectRW(IntPtr addr, nuint size)
         {
             uint oldProtect;
-            if (!VirtualProtect((void*)addr, size, PAGE_READWRITE, &oldProtect))
+            if (VirtualProtect((void*)addr, size, PAGE_READWRITE, &oldProtect) == 0)
             {
                 throw LogAllSections(GetLastError(), addr, size);
             }
@@ -121,7 +121,7 @@ namespace MonoMod.Core.Platforms.Systems
         private unsafe static void ProtectRWX(IntPtr addr, nuint size)
         {
             uint oldProtect;
-            if (!VirtualProtect((void*)addr, size, PAGE_EXECUTE_READWRITE, &oldProtect))
+            if (VirtualProtect((void*)addr, size, PAGE_EXECUTE_READWRITE, &oldProtect) == 0)
             {
                 throw LogAllSections(GetLastError(), addr, size);
             }
@@ -129,7 +129,7 @@ namespace MonoMod.Core.Platforms.Systems
 
         private unsafe static void FlushInstructionCache(IntPtr addr, nuint size)
         {
-            if (!Interop.Windows.FlushInstructionCache(GetCurrentProcess(), (void*)addr, size))
+            if (Interop.Windows.FlushInstructionCache(GetCurrentProcess(), (void*)addr, size) == 0)
             {
                 throw LogAllSections(GetLastError(), addr, size);
             }
@@ -298,7 +298,7 @@ namespace MonoMod.Core.Platforms.Systems
 
             public unsafe override bool TryFreePage(IntPtr pageAddr, [NotNullWhen(false)] out string? errorMsg)
             {
-                if (!VirtualFree((void*)pageAddr, 0, MEM_RELEASE))
+                if (VirtualFree((void*)pageAddr, 0, MEM_RELEASE) == 0)
                 {
                     // VirtualFree failing is kinda wierd, but whatever
                     errorMsg = new Win32Exception((int)GetLastError()).Message;

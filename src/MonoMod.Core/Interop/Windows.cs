@@ -30,11 +30,11 @@ namespace MonoMod.Core.Interop
 
         [DllImport("kernel32", ExactSpelling = true)]
         [SetsLastSystemError]
-        public static extern BOOL VirtualProtect([NativeTypeName("LPVOID")] void* lpAddress, [NativeTypeName("SIZE_T")] nuint dwSize, [NativeTypeName("DWORD")] uint flNewProtect, [NativeTypeName("PDWORD")] uint* lpflOldProtect);
+        public static extern int VirtualProtect([NativeTypeName("LPVOID")] void* lpAddress, [NativeTypeName("SIZE_T")] nuint dwSize, [NativeTypeName("DWORD")] uint flNewProtect, [NativeTypeName("PDWORD")] uint* lpflOldProtect);
 
         [DllImport("kernel32", ExactSpelling = true)]
         [SetsLastSystemError]
-        public static extern BOOL VirtualFree([NativeTypeName("LPVOID")] void* lpAddress, [NativeTypeName("SIZE_T")] nuint dwSize, [NativeTypeName("DWORD")] uint dwFreeType);
+        public static extern int VirtualFree([NativeTypeName("LPVOID")] void* lpAddress, [NativeTypeName("SIZE_T")] nuint dwSize, [NativeTypeName("DWORD")] uint dwFreeType);
 
         [DllImport("kernel32", ExactSpelling = true)]
         [SetsLastSystemError]
@@ -45,11 +45,11 @@ namespace MonoMod.Core.Interop
         public static extern void GetSystemInfo([NativeTypeName("LPSYSTEM_INFO")] SYSTEM_INFO* lpSystemInfo);
 
         [DllImport("kernel32", ExactSpelling = true)]
-        public static extern HANDLE GetCurrentProcess();
+        public static extern void* GetCurrentProcess();
 
         [DllImport("kernel32", ExactSpelling = true)]
         [SetsLastSystemError]
-        public static extern BOOL FlushInstructionCache(HANDLE hProcess, [NativeTypeName("LPCVOID")] void* lpBaseAddress, [NativeTypeName("SIZE_T")] nuint dwSize);
+        public static extern int FlushInstructionCache(void* hProcess, [NativeTypeName("LPCVOID")] void* lpBaseAddress, [NativeTypeName("SIZE_T")] nuint dwSize);
 
         [DllImport("kernel32", ExactSpelling = true)]
         [return: NativeTypeName("DWORD")]
@@ -148,203 +148,6 @@ namespace MonoMod.Core.Interop
                     public ushort wReserved;
                 }
             }
-        }
-
-        public readonly partial struct BOOL : IComparable, IComparable<BOOL>, IEquatable<BOOL>, IFormattable
-        {
-            public readonly int Value;
-
-            public BOOL(int value)
-            {
-                Value = value;
-            }
-
-            public static BOOL FALSE => new(0);
-
-            public static BOOL TRUE => new(1);
-
-            public static bool operator ==(BOOL left, BOOL right) => left.Value == right.Value;
-
-            public static bool operator !=(BOOL left, BOOL right) => left.Value != right.Value;
-
-            public static bool operator <(BOOL left, BOOL right) => left.Value < right.Value;
-
-            public static bool operator <=(BOOL left, BOOL right) => left.Value <= right.Value;
-
-            public static bool operator >(BOOL left, BOOL right) => left.Value > right.Value;
-
-            public static bool operator >=(BOOL left, BOOL right) => left.Value >= right.Value;
-
-            public static implicit operator bool(BOOL value) => value.Value != 0;
-
-            public static implicit operator BOOL(bool value) => new(value ? 1 : 0);
-
-            public static bool operator false(BOOL value) => value.Value == 0;
-
-            public static bool operator true(BOOL value) => value.Value != 0;
-
-            public static implicit operator BOOL(byte value) => new(value);
-
-            public static explicit operator byte(BOOL value) => (byte)value.Value;
-
-            public static implicit operator BOOL(short value) => new(value);
-
-            public static explicit operator short(BOOL value) => (short)value.Value;
-
-            public static implicit operator BOOL(int value) => new(value);
-
-            public static implicit operator int(BOOL value) => value.Value;
-
-            public static explicit operator BOOL(long value) => new(unchecked((int)value));
-
-            public static implicit operator long(BOOL value) => value.Value;
-
-            public static explicit operator BOOL(nint value) => new(unchecked((int)value));
-
-            public static implicit operator nint(BOOL value) => value.Value;
-
-            public static implicit operator BOOL(sbyte value) => new(value);
-
-            public static explicit operator sbyte(BOOL value) => (sbyte)value.Value;
-
-            public static implicit operator BOOL(ushort value) => new(value);
-
-            public static explicit operator ushort(BOOL value) => (ushort)value.Value;
-
-            public static explicit operator BOOL(uint value) => new(unchecked((int)value));
-
-            public static explicit operator uint(BOOL value) => (uint)value.Value;
-
-            public static explicit operator BOOL(ulong value) => new(unchecked((int)value));
-
-            public static explicit operator ulong(BOOL value) => (ulong)value.Value;
-
-            public static explicit operator BOOL(nuint value) => new(unchecked((int)value));
-
-            public static explicit operator nuint(BOOL value) => (nuint)value.Value;
-
-            public int CompareTo(object? obj)
-            {
-                if (obj is BOOL other)
-                {
-                    return CompareTo(other);
-                }
-
-                return (obj is null) ? 1 : throw new ArgumentException("obj is not an instance of BOOL.");
-            }
-
-            public int CompareTo(BOOL other) => Value.CompareTo(other.Value);
-
-            public override bool Equals(object? obj) => (obj is BOOL other) && Equals(other);
-
-            public bool Equals(BOOL other) => Value.Equals(other.Value);
-
-            public override int GetHashCode() => Value.GetHashCode();
-
-            public override string ToString() => Value.ToString(provider: null);
-
-            public string ToString(string? format, IFormatProvider? formatProvider) => Value.ToString(format, formatProvider);
-        }
-
-        public readonly unsafe partial struct HANDLE : IComparable, IComparable<HANDLE>, IEquatable<HANDLE>, IFormattable
-        {
-            public readonly void* Value;
-
-            public HANDLE(void* value)
-            {
-                Value = value;
-            }
-
-            public static HANDLE INVALID_VALUE => new((void*)-1);
-
-            public static HANDLE NULL => new(null);
-
-            public static bool operator ==(HANDLE left, HANDLE right) => left.Value == right.Value;
-
-            public static bool operator !=(HANDLE left, HANDLE right) => left.Value != right.Value;
-
-            public static bool operator <(HANDLE left, HANDLE right) => left.Value < right.Value;
-
-            public static bool operator <=(HANDLE left, HANDLE right) => left.Value <= right.Value;
-
-            public static bool operator >(HANDLE left, HANDLE right) => left.Value > right.Value;
-
-            public static bool operator >=(HANDLE left, HANDLE right) => left.Value >= right.Value;
-
-            public static explicit operator HANDLE(void* value) => new(value);
-
-            public static implicit operator void*(HANDLE value) => value.Value;
-
-            public static explicit operator HANDLE(byte value) => new(unchecked((void*)value));
-
-            public static explicit operator byte(HANDLE value) => (byte)value.Value;
-
-            public static explicit operator HANDLE(short value) => new(unchecked((void*)value));
-
-            public static explicit operator short(HANDLE value) => (short)value.Value;
-
-            public static explicit operator HANDLE(int value) => new(unchecked((void*)value));
-
-            public static explicit operator int(HANDLE value) => (int)value.Value;
-
-            public static explicit operator HANDLE(long value) => new(unchecked((void*)value));
-
-            public static explicit operator long(HANDLE value) => (long)value.Value;
-
-            public static explicit operator HANDLE(nint value) => new(unchecked((void*)value));
-
-            public static implicit operator nint(HANDLE value) => (nint)value.Value;
-
-            public static explicit operator HANDLE(sbyte value) => new(unchecked((void*)value));
-
-            public static explicit operator sbyte(HANDLE value) => (sbyte)value.Value;
-
-            public static explicit operator HANDLE(ushort value) => new(unchecked((void*)value));
-
-            public static explicit operator ushort(HANDLE value) => (ushort)value.Value;
-
-            public static explicit operator HANDLE(uint value) => new(unchecked((void*)value));
-
-            public static explicit operator uint(HANDLE value) => (uint)value.Value;
-
-            public static explicit operator HANDLE(ulong value) => new(unchecked((void*)value));
-
-            public static explicit operator ulong(HANDLE value) => (ulong)value.Value;
-
-            public static explicit operator HANDLE(nuint value) => new(unchecked((void*)value));
-
-            public static implicit operator nuint(HANDLE value) => (nuint)value.Value;
-
-            public int CompareTo(object? obj)
-            {
-                if (obj is HANDLE other)
-                {
-                    return CompareTo(other);
-                }
-
-                return (obj is null) ? 1 : throw new ArgumentException("obj is not an instance of HANDLE.");
-            }
-
-            public int CompareTo(HANDLE other)
-                => sizeof(nint) == 4
-                    ? ((uint)Value).CompareTo((uint)other.Value)
-                    : ((ulong)Value).CompareTo((ulong)other.Value);
-
-            public override bool Equals(object? obj) => (obj is HANDLE other) && Equals(other);
-
-            public bool Equals(HANDLE other) => ((nuint)Value).Equals((nuint)other.Value);
-
-            public override int GetHashCode() => ((nuint)Value).GetHashCode();
-
-            public override string ToString()
-                => sizeof(nuint) == 4
-                    ? ((uint)Value).ToString("X8", null)
-                    : ((ulong)Value).ToString("X16", null);
-
-            public string ToString(string? format, IFormatProvider? formatProvider)
-                => sizeof(nint) == 4
-                    ? ((uint)Value).ToString(format, formatProvider)
-                    : ((ulong)Value).ToString(format, formatProvider);
         }
 
         [NativeTypeName("#define MEM_COMMIT 0x00001000")]
@@ -610,7 +413,7 @@ namespace MonoMod.Core.Interop
         // NOTE: This is only supported on Windows 10+! Our safe-wrapper returns FALSE when this function doesn't exist.
         [DllImport("kernelbase", ExactSpelling = true)]
         [SetsLastSystemError]
-        private static extern BOOL SetProcessValidCallTargets(HANDLE hProcess,
+        private static extern int SetProcessValidCallTargets(void* hProcess,
             [NativeTypeName("PVOID")] void* VirtualAddress,
             [NativeTypeName("SIZE_T")] nuint RegionSize,
             [NativeTypeName("ULONG")] uint NumberOfOffsets,
@@ -639,7 +442,7 @@ namespace MonoMod.Core.Interop
             }
         }
 
-        public static BOOL TrySetProcessValidCallTargets(
+        public static int TrySetProcessValidCallTargets(
             void* VirtualAddress,
             nuint RegionSize,
             uint NumberOfOffsets,
@@ -651,7 +454,7 @@ namespace MonoMod.Core.Interop
             }
             else
             {
-                return false;
+                return 0;
             }
         }
     }
